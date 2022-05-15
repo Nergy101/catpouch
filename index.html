@@ -19,9 +19,9 @@
     />
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
-    <script type="module" crossorigin src="/catpouch/assets/index.c33a7ca1.js"></script>
-    <link rel="stylesheet" href="/catpouch/assets/index.c6ae6860.css">
+    <title>Cat Pouch</title>
+    <script type="module" crossorigin src="/catpouch/assets/index.15417f56.js"></script>
+    <link rel="stylesheet" href="/catpouch/assets/index.50474ad3.css">
   </head>
   <body>
     <div id="app" class="container">
@@ -44,6 +44,9 @@
                 oninput="this.nextElementSibling.value = this.value"
               /><output id="catAgeOutput">20</output><span> years old</span>
             </div>
+            <button id="deleteBtn" class="btn btn-outline-danger">
+              Delete all
+            </button>
             <button id="submitBtn" type="submit" class="btn btn-primary">
               Submit
             </button>
@@ -51,7 +54,7 @@
         </div>
         <div class="col-6">
           <h1>Cat List</h1>
-          <ul class="list-group" id="catList"></ul>
+          <div id="catList" class="catlist"></div>
         </div>
       </div>
     </div>
