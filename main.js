@@ -114,7 +114,7 @@ async function deleteCats() {
 
 window.onload = async () => {
   const info = await db.info();
-  console.log(info);
+  console.log("DB info:", info);
 
   await renderCatList();
 };
