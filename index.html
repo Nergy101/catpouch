@@ -10,6 +10,7 @@
         env: { DEBUG: undefined },
         version: [],
       };
+      window.process = process;
       window.global = global;
     </script>
     <link
@@ -51,8 +52,7 @@
         </div>
         <div class="col-6">
           <h1>Cat List</h1>
-          <ul class="list-group" id="catList">
-          </ul>
+          <ul class="list-group" id="catList"></ul>
         </div>
       </div>
     </div>
