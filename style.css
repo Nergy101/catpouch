@@ -6,3 +6,16 @@
   color: #2c3e50;
   margin-top: 60px;
 }
+
+.catlist {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 1em;
+}
+
+.cat-card {
+  display: flex;
+  flex-basis: 30%;
+}

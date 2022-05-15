@@ -1,49 +1,14 @@
 import "./style.css";
 import PouchDB from "pouchdb";
 import PouchdbFind from "pouchdb-find";
-PouchDB.plugin(PouchdbFind);
+import { html, render } from "lit-html";
+import { until } from "lit-html/directives/until.js";
 
+// setup pouchdb
+PouchDB.plugin(PouchdbFind);
 var db = new PouchDB("cats");
 
-async function addCat(catName, catAge) {
-  let doc = await tryGetCat(catName);
-
-  doc._id = doc._id ?? new Date().toJSON();
-  doc._rev = doc._rev ?? "";
-
-  doc.type = "cat";
-  doc.name = catName;
-  doc.age = catAge;
-  doc.hobbies = ["playing", "sleeping", "hunting"];
-
-  await db.put(doc);
-}
-
-async function tryGetCat(catName) {
-  try {
-    return await db.get(catName);
-  } catch {
-    return {};
-  }
-}
-
-async function sync() {
-  await db.sync("cats");
-}
-
-async function getCats() {
-  const cats = await db.allDocs({
-    include_docs: true,
-    descending: true,
-  });
-  return cats.rows;
-}
-
-async function getCat(catId) {
-  const cat = await db.get(catId);
-  return cat;
-}
-
+// cat pouch changes
 db.changes({ since: "now", live: true, include_docs: true }).on(
   "change",
   async (change) => {
@@ -60,29 +25,58 @@ db.changes({ since: "now", live: true, include_docs: true }).on(
   }
 );
 
-document.getElementById("submitBtn").addEventListener("click", (event) => {
-  if (document.querySelector("form").checkValidity()) {
-    event.preventDefault();
-    onSubmit().catch((e) => console.log("Error when submitting", e));
+// cat pouch functions
+async function addCat(catName, catAge) {
+  const response = await fetch("https://api.thecatapi.com/v1/images/search");
+  const catImage = await response.json();
+
+  let doc = await tryGetCat(catName);
+
+  doc._id = doc._id ?? new Date().toJSON();
+  doc._rev = doc._rev ?? "";
+
+  doc.url = catImage[0].url;
+  doc.type = "cat";
+  doc.name = catName;
+  doc.age = catAge;
+  doc.hobbies = ["playing", "sleeping", "hunting"];
+
+  await db.put(doc);
+}
+
+async function tryGetCat(catName) {
+  try {
+    return await db.get(catName);
+  } catch {
+    return {};
   }
-});
+}
 
-async function renderCatList() {
+async function getCats() {
+  const cats = await db.allDocs({
+    include_docs: true,
+    descending: true,
+  });
+  return cats.rows;
+}
+
+async function getCat(catId) {
+  const cat = await db.get(catId);
+  return cat;
+}
+
+async function listCats() {
   const cats = await getCats();
-  const catsList = document.getElementById("catList");
-  catsList.innerHTML = "";
+  cats.map((c) => c.doc).forEach((c) => console.log(c));
+}
 
-  cats.forEach(async (cat) => {
-    const catDoc = cat.doc;
+async function deleteCats() {
+  var docs = await getCats();
 
-    let newLi = document.createElement("li");
-    newLi.appendChild(
-      document.createTextNode(
-        `${catDoc.name}, ${catDoc.age}: ${catDoc.hobbies}`
-      )
-    );
-    newLi.classList.add("list-group-item");
-    catsList.appendChild(newLi);
+  docs.forEach(async (c) => {
+    var cat = await getCat(c.id);
+    db.remove(cat);
+    await renderCatList();
   });
 }
 
@@ -97,24 +91,61 @@ async function onSubmit() {
   catAgeOutput.value = "20";
 }
 
-async function listCats() {
-  const cats = await getCats();
-  cats.map((c) => c.doc).forEach((c) => console.log(c));
+// lit-html elements
+const catCardTemplate = (catDoc) =>
+  html` <div class="card cat-card" style="width: 18rem;">
+    <img src="${catDoc.url}" class="card-img-top" alt="image of cat" />
+    <div class="card-body">
+      <div class="card-text">
+        ${catDoc.name}, ${catDoc.age}. <br />
+        ${catDoc.hobbies.join(", ")}
+      </div>
+    </div>
+  </div>`;
+
+const catCardListTemplate = () => {
+  return html`${until(
+    getCats().then((cats) => {
+      return cats.map((c) => c.doc).map((catDoc) => catCardTemplate(catDoc));
+    }),
+    html`Loading cats...`
+  )}`;
+};
+
+// render cat list
+
+async function renderCatList() {
+  render(catCardListTemplate(), document.getElementById("catList"));
 }
 
-async function deleteCats() {
-  var docs = await getCats();
+// customElements.define("catCardTemplate", catCardTemplate);
+// customElements.define("catCardListTemplate", catCardListTemplate);
 
-  docs.forEach(async (c) => {
-    var cat = await getCat(c.id);
-    console.log("test", cat);
-    db.remove(cat);
+// button listeners
+document
+  .getElementById("submitBtn")
+  .addEventListener("click", async (event) => {
+    if (document.querySelector("form").checkValidity()) {
+      event.preventDefault();
+      try {
+        await onSubmit();
+      } catch (e) {
+        console.error("Error when submitting", e);
+      }
+    }
   });
-}
 
+document
+  .getElementById("deleteBtn")
+  .addEventListener("click", async (event) => {
+    event.preventDefault();
+    await deleteCats();
+  });
+
+// init page
 window.onload = async () => {
   const info = await db.info();
-  console.log("DB info:", info);
+  console.info("DB info:", info);
 
   await renderCatList();
 };
