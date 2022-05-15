@@ -2,7 +2,7 @@
  * @type {import('vite').UserConfig}
  */
 const config = {
-  base: "/",
+  base: "/catpouch/",
   mode: "production",
 };
 
