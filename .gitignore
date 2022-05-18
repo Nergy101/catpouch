@@ -1,3 +1,6 @@
+# Docker (compose)
+couchdb/*
+
 # Logs
 logs
 *.log

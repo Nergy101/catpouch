@@ -1,12 +1,18 @@
 import "./style.css";
 import PouchDB from "pouchdb";
 import PouchdbFind from "pouchdb-find";
+// import Pouchdb from "pouchdb-adapter-localstorage";
+
 import { html, render } from "lit-html";
 import { until } from "lit-html/directives/until.js";
 
 // setup pouchdb
 PouchDB.plugin(PouchdbFind);
+// PouchDB.plugin(a);
 var db = new PouchDB("cats");
+
+console.log("Imported env variables", import.meta.env);
+console.log(import.meta.env.VITE_DB_URL);
 
 // cat pouch changes
 db.changes({ since: "now", live: true, include_docs: true }).on(
@@ -26,6 +32,20 @@ db.changes({ since: "now", live: true, include_docs: true }).on(
 );
 
 // cat pouch functions
+async function syncDatabase(
+  remoteDbUrl = import.meta.env.VITE_DB_URL + "/cats"
+) {
+  var remoteDB = new PouchDB(remoteDbUrl);
+
+  db.sync(remoteDB)
+    .on("complete", function () {
+      console.log("Synced to", remoteDbUrl);
+    })
+    .on("error", function (err) {
+      console.error("Error syncing to", remoteDbUrl, err);
+    });
+}
+
 async function addCat(catName, catAge) {
   const response = await fetch("https://api.thecatapi.com/v1/images/search");
   const catImage = await response.json();
@@ -118,9 +138,6 @@ async function renderCatList() {
   render(catCardListTemplate(), document.getElementById("catList"));
 }
 
-// customElements.define("catCardTemplate", catCardTemplate);
-// customElements.define("catCardListTemplate", catCardListTemplate);
-
 // button listeners
 document
   .getElementById("submitBtn")
@@ -141,6 +158,11 @@ document
     event.preventDefault();
     await deleteCats();
   });
+
+document.getElementById("syncBtn").addEventListener("click", async (event) => {
+  event.preventDefault();
+  await syncDatabase();
+});
 
 // init page
 window.onload = async () => {

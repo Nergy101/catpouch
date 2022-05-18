@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  web:
+    image: nergy101/catpouch:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/app
+    links:
+      - couchdb
+    environment:
+      - VITE_DB_URL
+  couchdb:
+    image: couchdb:latest
+    ports:
+      - "5984:5984"
+    volumes:
+      - ./couchdb/data:/opt/couchdb/etc/local.d
+    environment:
+      - COUCHDB_USER
+      - COUCHDB_PASSWORD
+
+# docker-compose --env-file .env.dev.local up 
+# docker-compose --env-file .env.prod.local up 

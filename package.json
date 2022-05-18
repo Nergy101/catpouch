@@ -17,6 +17,7 @@
     "lit": "^2.2.3",
     "lit-html": "^2.2.3",
     "pouchdb": "^7.3.0",
+    "pouchdb-adapter-localstorage": "^7.3.0",
     "pouchdb-browser": "^7.3.0",
     "pouchdb-find": "^7.3.0"
   }
