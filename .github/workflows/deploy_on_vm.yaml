@@ -24,7 +24,7 @@ jobs:
             COUCHDB_PASSWORD=${{ COUCHDB_PASSWORD }}
             VITE_DB_URL=${{ VITE_DB_URL }}
             docker-compose down
-            docker-compose rm
+            docker-compose rm -f
             docker-compose up
 
 # env variables:

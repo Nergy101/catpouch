@@ -25,5 +25,5 @@ services:
 # - COUCHDB_PASSWORD
 # - VITE_DB_URL
 
-# docker-compose --env-file .env.dev.local up 
+# docker-compose --env-file .env.dev up 
 # docker-compose --env-file .env.prod.local up 
