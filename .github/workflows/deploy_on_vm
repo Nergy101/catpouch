@@ -1,4 +1,4 @@
-name: Deploy docker-compose on DigitalOcean Droplet (VM)
+name: Deploy to DigitalOcean
 
 # Only trigger, when the build workflow succeeded
 on:
