@@ -30,4 +30,5 @@ jobs:
 # env variables:
 # - COUCHDB_USER
 # - COUCHDB_PASSWORD
+# - COUCHDB_ADDRESS (ip:port, localhost:port)
 # - VITE_DB_URL

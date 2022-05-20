@@ -16,6 +16,8 @@ services:
       - "5984:5984"
     volumes:
       - ./couchdb/data:/opt/couchdb/etc/local.d
+      - ./couchdb/local.ini:/opt/couchdb/etc/
+      - ./couchdb/logs:/opt/couchdb/log/couch.log
     environment:
       - COUCHDB_USER
       - COUCHDB_PASSWORD
