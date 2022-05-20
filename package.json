@@ -19,6 +19,7 @@
     "pouchdb": "^7.3.0",
     "pouchdb-adapter-localstorage": "^7.3.0",
     "pouchdb-browser": "^7.3.0",
-    "pouchdb-find": "^7.3.0"
+    "pouchdb-find": "^7.3.0",
+    "toastr": "^2.1.4"
   }
 }

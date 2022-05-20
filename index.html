@@ -21,11 +21,33 @@
       rel="stylesheet"
       href="./node_modules/bootstrap/dist/css/bootstrap.min.css"
     />
+    <link href="./node_modules/toastr/build/toastr.min.css" rel="stylesheet"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cat Pouch</title>
   </head>
-  <body>
-    <div id="app" class="container">
+  <body class="bg-dark text-white">
+    <div
+      id="myAlert"
+      class="alert alert-primary d-none justify-content-center"
+      role="alert"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        fill="currentColor"
+        class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"
+        viewBox="0 0 16 16"
+        role="img"
+        aria-label="Warning:"
+      >
+        <path
+          d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
+        />
+      </svg>
+      <div>Couldn't sync to CouchDB</div>
+    </div>
+    <div id="app" class="container text-white-50">
       <div class="row">
         <div class="col-md-6">
           <h1>Cat Form</h1>
@@ -45,15 +67,28 @@
                 oninput="this.nextElementSibling.value = this.value"
               /><output id="catAgeOutput">20</output><span> years old</span>
             </div>
-            <button id="deleteBtn" class="btn btn-outline-danger">
-              Delete all kitties
-            </button>
-            <button id="syncBtn" class="btn btn-outline-primary">
-              Sync to CouchDB
-            </button>
-            <button id="submitBtn" type="submit" class="btn btn-primary">
-              Add kitty
-            </button>
+            <div class="row">
+              <button
+                id="submitBtn"
+                type="submit"
+                class="btn btn-primary col-12 mt-3"
+              >
+                Add kitty
+              </button>
+              <button
+                id="deleteBtn"
+                class="btn btn-outline-danger col-12 col-md-5 mt-3"
+              >
+                Delete all kitties
+              </button>
+              <div class="col-0 col-md-2"></div>
+              <button
+                id="syncBtn"
+                class="btn btn-outline-success col-12 col-md-5 mt-3"
+              >
+                Sync to CouchDB
+              </button>
+            </div>
           </form>
         </div>
         <div class="col-md-6 mt-5 mt-md-0">
@@ -62,6 +97,7 @@
         </div>
       </div>
     </div>
+
     <script type="module" src="/main.js"></script>
   </body>
 </html>

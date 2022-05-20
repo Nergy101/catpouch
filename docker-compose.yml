@@ -20,5 +20,10 @@ services:
       - COUCHDB_USER
       - COUCHDB_PASSWORD
 
+# env variables:
+# - COUCHDB_USER
+# - COUCHDB_PASSWORD
+# - VITE_DB_URL
+
 # docker-compose --env-file .env.dev.local up 
 # docker-compose --env-file .env.prod.local up 

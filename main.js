@@ -1,14 +1,18 @@
 import "./style.css";
 import PouchDB from "pouchdb";
 import PouchdbFind from "pouchdb-find";
-// import Pouchdb from "pouchdb-adapter-localstorage";
+import toastr from "toastr";
 
 import { html, render } from "lit-html";
 import { until } from "lit-html/directives/until.js";
 
+// toastr settings
+toastr.options.closeButton = true;
+toastr.options.preventDuplicates = true;
+
 // setup pouchdb
 PouchDB.plugin(PouchdbFind);
-// PouchDB.plugin(a);
+
 var db = new PouchDB("cats");
 
 console.log("Imported env variables", import.meta.env);
@@ -40,9 +44,11 @@ async function syncDatabase(
   db.sync(remoteDB)
     .on("complete", function () {
       console.log("Synced to", remoteDbUrl);
+      toastr.success("Synced to CouchDB");
     })
     .on("error", function (err) {
       console.error("Error syncing to", remoteDbUrl, err);
+      toastr.error("Couldn't sync to CouchDB!");
     });
 }
 
@@ -62,6 +68,7 @@ async function addCat(catName, catAge) {
   doc.hobbies = ["playing", "sleeping", "hunting"];
 
   await db.put(doc);
+  toastr.success("Added kitty")
 }
 
 async function tryGetCat(catName) {
@@ -98,6 +105,8 @@ async function deleteCats() {
     db.remove(cat);
     await renderCatList();
   });
+
+  toastr.success("Deleted kitties")
 }
 
 async function onSubmit() {
@@ -113,12 +122,20 @@ async function onSubmit() {
 
 // lit-html elements
 const catCardTemplate = (catDoc) =>
-  html` <div class="card cat-card" style="width: 18rem;">
+  html` <div
+    class="card bg-dark border-white text-white cat-card"
+    style="width: 18rem;"
+  >
     <img src="${catDoc.url}" class="card-img-top" alt="image of cat" />
     <div class="card-body">
       <div class="card-text">
-        ${catDoc.name}, ${catDoc.age}. <br />
-        ${catDoc.hobbies.join(", ")}
+        <h3>${catDoc.name}, ${catDoc.age}.</h3>
+        <br />
+        <div>
+          ${catDoc.hobbies.map(
+            (h) => html`<span class="badge rounded-pill bg-primary">${h}</span>`
+          )}
+        </div>
       </div>
     </div>
   </div>`;

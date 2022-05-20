@@ -1,0 +1,33 @@
+name: Deploy docker-compose on DigitalOcean Droplet (VM)
+
+# Only trigger, when the build workflow succeeded
+on:
+  workflow_run:
+    workflows: ["Publish CatPouch Docker Image"]
+    types:
+      - completed
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          password: ${{ secrets.VM_PASSWORD }}
+          port: ${{ secrets.VM_PORT }}
+          script: |
+            COUCHDB_USER=${{ COUCHDB_USER }}
+            COUCHDB_PASSWORD=${{ COUCHDB_PASSWORD }}
+            VITE_DB_URL=${{ VITE_DB_URL }}
+            docker-compose down
+            docker-compose rm
+            docker-compose up
+
+# env variables:
+# - COUCHDB_USER
+# - COUCHDB_PASSWORD
+# - VITE_DB_URL
