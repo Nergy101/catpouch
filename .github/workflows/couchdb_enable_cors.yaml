@@ -4,7 +4,7 @@ name: Enable CouchDB cors
 # Only trigger, when the build workflow succeeded
 on:
   workflow_run:
-    workflows: ["P Deploy to DigitalOcean"]
+    workflows: ["Deploy to DigitalOcean"]
     types:
       - completed
 
